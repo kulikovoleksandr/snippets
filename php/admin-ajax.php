@@ -1,13 +1,15 @@
 <?php
 
-function wp_pageviews_scripts()
+//PHP
+function ajax_localize_script()
 {
-    wp_localize_script('core-defer-main', 'wp_pageviews_ajax', array(
+    //add localize_script
+    wp_localize_script('core-defer-main', 'ajax_get_post', array(
         'ajax_url' => admin_url('admin-ajax.php'),
     ));
 }
 
-add_action('wp_enqueue_scripts', 'wp_pageviews_scripts');
+add_action('wp_enqueue_scripts', 'ajax_localize_script');
 
 
 add_action('wp_ajax_get_post', 'ajax_get_post');
@@ -23,3 +25,23 @@ function ajax_get_post()
 
     wp_send_json($return);
 }
+
+//Javascript Fetch
+
+const data = new FormData();
+data.append('action', 'get_post');
+data.append('id', button.getAttribute('data-id'));
+
+fetch(ajax_get_post.ajax_url, {
+        method: "POST",
+        body: data
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (data) {
+            console.log(data);
+        }
+    })
+    .catch((error) => {
+        console.error(error);
+    });
